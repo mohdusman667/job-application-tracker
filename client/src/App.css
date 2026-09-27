@@ -819,3 +819,18 @@ a {
   line-height: 1.7;
   white-space: pre-wrap;
 }
+.analyzer-use-button {
+  margin-top: 1rem;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid #0b806d;
+  border-radius: 10px;
+  background: transparent;
+  color: #087f68;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.analyzer-use-button:hover {
+  background: #e6f5ef;
+}

@@ -333,6 +333,25 @@ const [analyzerError, setAnalyzerError] = useState("");
   <div className="analyzer-result">
     <h3>Job description insights</h3>
     <p>{analysis}</p>
+    <button
+  className="analyzer-use-button"
+  type="button"
+  onClick={() => {
+  setForm((currentForm) => ({
+    ...currentForm,
+    notes: currentForm.notes?.includes(analysis)
+      ? currentForm.notes
+      : [currentForm.notes, analysis].filter(Boolean).join("\n\n"),
+  }));
+
+  document.querySelector('textarea[name="notes"]')?.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  });
+}}
+>
+  Add insights to application notes
+</button>
   </div>
 )}
           </aside>
