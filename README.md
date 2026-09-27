@@ -10,10 +10,10 @@ A MERN stack app for organizing job applications, tracking progress, and prepari
 - Delete an application
 - View a dashboard summary
 
-## Planned feature
+## AI job description analyzer
 
-- **AI Job Description Analyzer:** summarize a role, identify key skills, and suggest interview questions
-
+- Paste a public job description to get an AI summary, key skills, main responsibilities, and three likely interview questions.
+- The analyzer uses Gemini through the backend. Keep `GEMINI_API_KEY` private in `server/.env`.
 ## Tech stack
 
 - React and Vite
@@ -28,3 +28,4 @@ Create a `server/.env` file containing your private MongoDB connection string:
 
 ```text
 MONGO_URI=your_mongodb_connection_string
+GEMINI_API_KEY=your_gemini_api_key
