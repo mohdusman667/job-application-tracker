@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import {
+  analyzeJobDescription,
   createApplication,
   deleteApplication,
   getApplications,
   updateApplication,
 } from "./api";
 
+
 const statuses = ["Applied", "Interview", "Offer", "Rejected", "Withdrawn"];
 
 function App() {
+  const [analysis, setAnalysis] = useState("");
+const [isAnalyzing, setIsAnalyzing] = useState(false);
+const [analyzerError, setAnalyzerError] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
   const [applications, setApplications] = useState([]);
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
@@ -23,6 +29,20 @@ function App() {
     description: "",
     notes: "",
   });
+  async function handleAnalyzeJob() {
+  setIsAnalyzing(true);
+  setAnalyzerError("");
+  setAnalysis("");
+
+  try {
+    const result = await analyzeJobDescription(jobDescription);
+    setAnalysis(result);
+  } catch (requestError) {
+    setAnalyzerError(requestError.message);
+  } finally {
+    setIsAnalyzing(false);
+  }
+}
 
   useEffect(() => {
     async function loadApplications() {
@@ -284,7 +304,37 @@ function App() {
               Our AI job description analyzer will surface key skills and help
               you prepare thoughtful interview questions.
             </p>
-            <span className="coming-soon">AI ANALYZER · COMING SOON</span>
+            <label className="analyzer-label" htmlFor="job-description">
+  Paste a job description
+</label>
+<textarea
+  id="job-description"
+  className="analyzer-input"
+  rows={6}
+  placeholder="Paste the job description here..."
+  value={jobDescription}
+  onChange={(event) => setJobDescription(event.target.value)}
+/>
+<button
+  className="analyzer-button"
+  type="button"
+  onClick={handleAnalyzeJob}
+  disabled={!jobDescription.trim() || isAnalyzing}
+>
+  {isAnalyzing ? "Analyzing..." : "Analyze job description"}
+</button>
+{analyzerError && (
+  <p className="analyzer-error" role="alert">
+    {analyzerError}
+  </p>
+)}
+
+{analysis && (
+  <div className="analyzer-result">
+    <h3>Job description insights</h3>
+    <p>{analysis}</p>
+  </div>
+)}
           </aside>
         </section>
 

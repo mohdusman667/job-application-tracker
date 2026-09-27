@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const applicationsRouter = require("./routes/applications");
+const aiRoutes = require("./routes/ai");
 
 const app = express();
 const PORT = 5000;
@@ -16,23 +17,17 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/applications", applicationsRouter);
+app.use("/api/ai", aiRoutes);
 
-async function startServer() {
-  try {
-   await mongoose.connect(process.env.MONGO_URI, { family: 4 });
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
+});
+
+mongoose
+  .connect(process.env.MONGO_URI, { family: 4 })
+  .then(() => {
     console.log("Connected to MongoDB");
-
-    app.listen(PORT, () => {
-      console.log(`Server is running at http://localhost:${PORT}`);
-    });
-  } catch (error) {
-  console.error("Could not connect to MongoDB:", error);
-  if (error.reason?.servers) {
-  for (const [address, server] of error.reason.servers) {
-    console.error(`${address}: ${server.error?.message || "No detailed error"}`);
-  }
-}
-  }
-}
-
-startServer();
+  })
+  .catch((error) => {
+    console.error("Could not connect to MongoDB:", error.message);
+  });
