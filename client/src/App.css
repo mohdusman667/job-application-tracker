@@ -834,3 +834,72 @@ a {
 .analyzer-use-button:hover {
   background: #e6f5ef;
 }
+.email-draft-button {
+  margin: 1rem 0;
+  padding: 0.8rem 1rem;
+  border: 1px solid #0b806d;
+  border-radius: 10px;
+  background: #087f68;
+  color: #fff;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.email-draft-button:not(:disabled):hover {
+  background: #066b59;
+  transform: translateY(-1px);
+}
+
+.email-draft-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.email-draft-label {
+  display: block;
+  margin: 0.75rem 0 1rem;
+  color: #253247;
+  font-weight: 650;
+}
+
+.email-draft-input {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-height: 170px;
+  margin-top: 0.5rem;
+  padding: 1rem;
+  border: 1px solid #d5deea;
+  border-radius: 12px;
+  background: #fff;
+  color: #182638;
+  font: inherit;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.email-draft-input:focus {
+  border-color: #0b806d;
+  outline: none;
+  box-shadow: 0 0 0 4px rgb(11 128 109 / 12%);
+}
+.email-draft-section {
+  grid-column: 1 / -1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.email-draft-button {
+  width: fit-content;
+  min-height: 0;
+  align-self: flex-start;
+}
+
+.email-draft-label {
+  width: 100%;
+}

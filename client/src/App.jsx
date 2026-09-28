@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import {
+  draftFollowUpEmail,
   analyzeJobDescription,
   createApplication,
   deleteApplication,
@@ -15,6 +16,9 @@ function App() {
   const [analysis, setAnalysis] = useState("");
 const [isAnalyzing, setIsAnalyzing] = useState(false);
 const [analyzerError, setAnalyzerError] = useState("");
+const [emailDraft, setEmailDraft] = useState("");
+const [isDraftingEmail, setIsDraftingEmail] = useState(false);
+const [emailDraftError, setEmailDraftError] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [applications, setApplications] = useState([]);
   const [search, setSearch] = useState("");
@@ -41,6 +45,20 @@ const [analyzerError, setAnalyzerError] = useState("");
     setAnalyzerError(requestError.message);
   } finally {
     setIsAnalyzing(false);
+  }
+}
+async function handleDraftFollowUpEmail() {
+  setIsDraftingEmail(true);
+  setEmailDraftError("");
+  setEmailDraft("");
+
+  try {
+    const draft = await draftFollowUpEmail(form);
+    setEmailDraft(draft);
+  } catch (requestError) {
+    setEmailDraftError(requestError.message);
+  } finally {
+    setIsDraftingEmail(false);
   }
 }
 
@@ -289,6 +307,35 @@ const [analyzerError, setAnalyzerError] = useState("");
                   placeholder="A contact, a reminder, or something to prepare..."
                 />
               </label>
+              <div className="email-draft-section full-width">
+  <button
+    type="button"
+    className="email-draft-button"
+    onClick={handleDraftFollowUpEmail}
+    disabled={!form.company.trim() || !form.jobTitle.trim() || isDraftingEmail}
+  >
+    {isDraftingEmail ? "Drafting email..." : "Draft follow-up email"}
+  </button>
+
+  {emailDraftError && (
+    <p className="analyzer-error" role="alert">
+      {emailDraftError}
+    </p>
+  )}
+
+  {emailDraft && (
+    <label className="email-draft-label" htmlFor="follow-up-email">
+      Follow-up email draft
+      <textarea
+        id="follow-up-email"
+        className="email-draft-input"
+        rows={8}
+        value={emailDraft}
+        onChange={(event) => setEmailDraft(event.target.value)}
+      />
+    </label>
+  )}
+</div>
 
               <button className="primary-button form-submit" type="submit">
                 Save application <span>→</span>

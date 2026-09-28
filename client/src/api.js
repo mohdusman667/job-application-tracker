@@ -63,3 +63,24 @@ export async function analyzeJobDescription(description) {
 
   return data.analysis;
 }
+export async function draftFollowUpEmail(application) {
+  const response = await fetch("http://localhost:5000/api/ai/draft-email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      company: application.company,
+      jobTitle: application.jobTitle,
+      status: application.status,
+    }),
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.message || "Could not draft the follow-up email.");
+  }
+
+  return data.draft;
+}
