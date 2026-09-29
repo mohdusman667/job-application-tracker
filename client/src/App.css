@@ -967,3 +967,19 @@ a {
   font: inherit;
   font-weight: 600;
 }
+.stat-card-button {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.stat-card-button:hover {
+  transform: translateY(-2px);
+}
+
+.stat-card-button:focus-visible {
+  outline: 3px solid #176b55;
+  outline-offset: 3px;
+}

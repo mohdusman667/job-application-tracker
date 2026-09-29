@@ -280,17 +280,35 @@ setEditingApplicationId(null);
             <strong>{offerCount}</strong>
             <span className="stat-footnote">Good things take focus</span>
           </article>
-          <article className="stat-card">
+          <button
+  type="button"
+  className="stat-card stat-card-button"
+  onClick={() => {
+    setFollowUpFilter("Overdue");
+    document
+      .getElementById("applications")
+      ?.scrollIntoView({ behavior: "smooth" });
+  }}
+>
   <span className="stat-label">OVERDUE FOLLOW-UPS</span>
   <strong>{overdueFollowUps}</strong>
   <span className="stat-footnote">Need your attention</span>
-</article>
+</button>
 
-<article className="stat-card">
+<button
+  type="button"
+  className="stat-card stat-card-button"
+  onClick={() => {
+    setFollowUpFilter("Due today");
+    document
+      .getElementById("applications")
+      ?.scrollIntoView({ behavior: "smooth" });
+  }}
+>
   <span className="stat-label">DUE TODAY</span>
   <strong>{followUpsDueToday}</strong>
   <span className="stat-footnote">Follow-ups to send today</span>
-</article>
+</button>
         </section>
 
         <section className="content-grid">
