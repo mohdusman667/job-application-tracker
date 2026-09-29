@@ -129,6 +129,17 @@ async function handleDraftFollowUpEmail() {
 
     return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
   });
+  const overdueFollowUps = applications.filter(
+  (item) =>
+    item.followUpDate &&
+    getFollowUpLabel(item.followUpDate) === "Overdue"
+).length;
+
+const followUpsDueToday = applications.filter(
+  (item) =>
+    item.followUpDate &&
+    getFollowUpLabel(item.followUpDate) === "Due today"
+).length;
   function handleChange(event) {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
@@ -269,6 +280,17 @@ setEditingApplicationId(null);
             <strong>{offerCount}</strong>
             <span className="stat-footnote">Good things take focus</span>
           </article>
+          <article className="stat-card">
+  <span className="stat-label">OVERDUE FOLLOW-UPS</span>
+  <strong>{overdueFollowUps}</strong>
+  <span className="stat-footnote">Need your attention</span>
+</article>
+
+<article className="stat-card">
+  <span className="stat-label">DUE TODAY</span>
+  <strong>{followUpsDueToday}</strong>
+  <span className="stat-footnote">Follow-ups to send today</span>
+</article>
         </section>
 
         <section className="content-grid">
