@@ -22,6 +22,7 @@ const [emailDraftError, setEmailDraftError] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [applications, setApplications] = useState([]);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
@@ -33,6 +34,7 @@ const [emailDraftError, setEmailDraftError] = useState("");
     description: "",
     notes: "",
   });
+  const [editingApplicationId, setEditingApplicationId] = useState(null);
   async function handleAnalyzeJob() {
   setIsAnalyzing(true);
   setAnalyzerError("");
@@ -86,11 +88,16 @@ async function handleDraftFollowUpEmail() {
     (item) => item.status === "Offer"
   ).length;
 
-  const visibleApplications = applications.filter((item) =>
-    `${item.company} ${item.jobTitle}`
-      .toLowerCase()
-      .includes(search.toLowerCase())
-  );
+ const visibleApplications = applications.filter((item) => {
+  const matchesSearch = `${item.company} ${item.jobTitle}`
+    .toLowerCase()
+    .includes(search.toLowerCase());
+
+  const matchesStatus =
+    statusFilter === "All" || item.status === statusFilter;
+
+  return matchesSearch && matchesStatus;
+});
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -102,8 +109,18 @@ async function handleDraftFollowUpEmail() {
     setError("");
 
     try {
-      const created = await createApplication(form);
-      setApplications((current) => [created, ...current]);
+      const savedApplication = editingApplicationId
+  ? await updateApplication(editingApplicationId, form)
+  : await createApplication(form);
+
+setApplications((current) =>
+  editingApplicationId
+    ? current.map((application) =>
+        application._id === savedApplication._id ? savedApplication : application
+      )
+    : [savedApplication, ...current]
+);
+setEditingApplicationId(null);
       setForm({
         company: "",
         jobTitle: "",
@@ -228,7 +245,7 @@ async function handleDraftFollowUpEmail() {
             <div className="section-heading">
               <div>
                 <p className="eyebrow">NEW OPPORTUNITY</p>
-                <h2>Add an application</h2>
+                <h2>{editingApplicationId ? "Edit application" : "Add an application"}</h2>
               </div>
               <span className="heading-mark">01</span>
             </div>
@@ -338,8 +355,31 @@ async function handleDraftFollowUpEmail() {
 </div>
 
               <button className="primary-button form-submit" type="submit">
-                Save application <span>→</span>
+                {editingApplicationId ? "Update application" : "Save application"} <span>→</span> <span>→</span>
               </button>
+                  
+
+      {editingApplicationId && (
+        <button
+          type="button"
+          className="cancel-edit-button"
+          onClick={() => {
+            setEditingApplicationId(null);
+            setForm({
+              company: "",
+              jobTitle: "",
+              location: "",
+              jobUrl: "",
+              status: "Applied",
+              description: "",
+              notes: "",
+            });
+            setError("");
+          }}
+        >
+          Cancel edit
+        </button>
+      )}
             </form>
           </section>
 
@@ -410,6 +450,19 @@ async function handleDraftFollowUpEmail() {
               <p className="eyebrow">YOUR PIPELINE</p>
               <h2>Applications <span>{applications.length}</span></h2>
             </div>
+            <select
+  className="status-filter"
+  value={statusFilter}
+  onChange={(event) => setStatusFilter(event.target.value)}
+  aria-label="Filter applications by status"
+>
+  <option value="All">All statuses</option>
+  {statuses.map((status) => (
+    <option key={status} value={status}>
+      {status}
+    </option>
+  ))}
+</select>
             <input
               className="search-input"
               type="search"
@@ -446,6 +499,25 @@ async function handleDraftFollowUpEmail() {
                         View job posting
                       </a>
                     )}
+                    <button
+  type="button"
+  className="edit-application-button"
+  onClick={() => {
+    setEditingApplicationId(application._id);
+    setForm({
+      company: application.company || "",
+      jobTitle: application.jobTitle || "",
+      location: application.location || "",
+      jobUrl: application.jobUrl || "",
+      status: application.status || "Applied",
+      description: application.description || "",
+      notes: application.notes || "",
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }}
+>
+  Edit application
+</button>
                   </div>
                   <span className={`status-pill status-${application.status.toLowerCase()}`}>
                     {application.status}

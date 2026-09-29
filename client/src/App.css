@@ -903,3 +903,28 @@ a {
 .email-draft-label {
   width: 100%;
 }
+.edit-application-button,
+.cancel-edit-button {
+  border: 1px solid #dce5dc;
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: transparent;
+  color: #176b55;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.edit-application-button:hover,
+.cancel-edit-button:hover {
+  background: #eff8f3;
+}
+.status-filter {
+  border: 1px solid #dce5dc;
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: #fff;
+  color: #176b55;
+  font: inherit;
+  font-weight: 600;
+}
