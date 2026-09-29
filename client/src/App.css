@@ -943,3 +943,18 @@ a {
   font-size: 0.95rem;
   font-weight: 600;
 }
+.follow-up-reminder.overdue {
+  color: #b42318;
+  background: #fff1f0;
+  border-left: 4px solid #b42318;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.follow-up-reminder.due-today {
+  color: #9a6700;
+  background: #fff8e1;
+  border-left: 4px solid #9a6700;
+  padding: 8px 10px;
+  border-radius: 8px;
+}

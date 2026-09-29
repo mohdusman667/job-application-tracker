@@ -11,6 +11,17 @@ import {
 
 
 const statuses = ["Applied", "Interview", "Offer", "Rejected", "Withdrawn"];
+function getFollowUpLabel(dateValue) {
+  const dueDate = new Date(dateValue);
+  const today = new Date();
+
+  dueDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  if (dueDate < today) return "Overdue";
+  if (dueDate.getTime() === today.getTime()) return "Due today";
+  return "Follow up by";
+}
 
 function App() {
   const [analysis, setAnalysis] = useState("");
@@ -527,9 +538,15 @@ setEditingApplicationId(null);
                         View job posting
                       </a>
                     )}
-                    {application.followUpDate && (
-  <p className="follow-up-reminder">
-    Follow up by{" "}
+                  {application.followUpDate && (
+  <p
+    className={`follow-up-reminder ${getFollowUpLabel(
+      application.followUpDate
+    )
+      .toLowerCase()
+      .replace(" ", "-")}`}
+  >
+    {getFollowUpLabel(application.followUpDate)}{" "}
     {new Date(application.followUpDate).toLocaleDateString()}
   </p>
 )}
