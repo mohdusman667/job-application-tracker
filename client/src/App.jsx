@@ -23,6 +23,7 @@ const [emailDraftError, setEmailDraftError] = useState("");
   const [applications, setApplications] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [sortOrder, setSortOrder] = useState("newest");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
@@ -30,6 +31,7 @@ const [emailDraftError, setEmailDraftError] = useState("");
     jobTitle: "",
     location: "",
     jobUrl: "",
+    followUpDate: "",
     status: "Applied",
     description: "",
     notes: "",
@@ -88,17 +90,23 @@ async function handleDraftFollowUpEmail() {
     (item) => item.status === "Offer"
   ).length;
 
- const visibleApplications = applications.filter((item) => {
-  const matchesSearch = `${item.company} ${item.jobTitle}`
-    .toLowerCase()
-    .includes(search.toLowerCase());
+ const visibleApplications = applications
+  .filter((item) => {
+    const matchesSearch = `${item.company} ${item.jobTitle}`
+      .toLowerCase()
+      .includes(search.toLowerCase());
 
-  const matchesStatus =
-    statusFilter === "All" || item.status === statusFilter;
+    const matchesStatus =
+      statusFilter === "All" || item.status === statusFilter;
 
-  return matchesSearch && matchesStatus;
-});
+    return matchesSearch && matchesStatus;
+  })
+  .sort((a, b) => {
+    const dateA = new Date(a.applicationDate || a.createdAt || 0).getTime();
+    const dateB = new Date(b.applicationDate || b.createdAt || 0).getTime();
 
+    return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+  });
   function handleChange(event) {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
@@ -126,6 +134,7 @@ setEditingApplicationId(null);
         jobTitle: "",
         location: "",
         jobUrl: "",
+        followUpDate: "",
         status: "Applied",
         description: "",
         notes: "",
@@ -302,6 +311,15 @@ setEditingApplicationId(null);
                   ))}
                 </select>
               </label>
+              <label>
+  Follow-up date
+  <input
+    type="date"
+    name="followUpDate"
+    value={form.followUpDate}
+    onChange={handleChange}
+  />
+</label>
 
               <label className="full-width">
                 Job description
@@ -370,6 +388,7 @@ setEditingApplicationId(null);
               jobTitle: "",
               location: "",
               jobUrl: "",
+              followUpDate: "",
               status: "Applied",
               description: "",
               notes: "",
@@ -463,6 +482,15 @@ setEditingApplicationId(null);
     </option>
   ))}
 </select>
+<select
+  className="sort-filter"
+  value={sortOrder}
+  onChange={(event) => setSortOrder(event.target.value)}
+  aria-label="Sort applications by date"
+>
+  <option value="newest">Newest first</option>
+  <option value="oldest">Oldest first</option>
+</select>
             <input
               className="search-input"
               type="search"
@@ -499,6 +527,12 @@ setEditingApplicationId(null);
                         View job posting
                       </a>
                     )}
+                    {application.followUpDate && (
+  <p className="follow-up-reminder">
+    Follow up by{" "}
+    {new Date(application.followUpDate).toLocaleDateString()}
+  </p>
+)}
                     <button
   type="button"
   className="edit-application-button"
@@ -509,6 +543,9 @@ setEditingApplicationId(null);
       jobTitle: application.jobTitle || "",
       location: application.location || "",
       jobUrl: application.jobUrl || "",
+      followUpDate: application.followUpDate
+  ? application.followUpDate.slice(0, 10)
+  : "",
       status: application.status || "Applied",
       description: application.description || "",
       notes: application.notes || "",
