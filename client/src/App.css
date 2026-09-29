@@ -958,3 +958,12 @@ a {
   padding: 8px 10px;
   border-radius: 8px;
 }
+.follow-up-filter {
+  border: 1px solid #dce5dc;
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: #fff;
+  color: #176b55;
+  font: inherit;
+  font-weight: 600;
+}

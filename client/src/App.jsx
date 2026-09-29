@@ -34,6 +34,7 @@ const [emailDraftError, setEmailDraftError] = useState("");
   const [applications, setApplications] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [followUpFilter, setFollowUpFilter] = useState("All");
   const [sortOrder, setSortOrder] = useState("newest");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -110,7 +111,17 @@ async function handleDraftFollowUpEmail() {
     const matchesStatus =
       statusFilter === "All" || item.status === statusFilter;
 
-    return matchesSearch && matchesStatus;
+    const followUpLabel = item.followUpDate
+      ? getFollowUpLabel(item.followUpDate)
+      : "";
+
+    const matchesFollowUp =
+      followUpFilter === "All" ||
+      (followUpFilter === "Overdue" && followUpLabel === "Overdue") ||
+      (followUpFilter === "Due today" && followUpLabel === "Due today") ||
+      (followUpFilter === "Upcoming" && followUpLabel === "Follow up by");
+
+    return matchesSearch && matchesStatus && matchesFollowUp;
   })
   .sort((a, b) => {
     const dateA = new Date(a.applicationDate || a.createdAt || 0).getTime();
@@ -492,6 +503,17 @@ setEditingApplicationId(null);
       {status}
     </option>
   ))}
+</select>
+<select
+  className="follow-up-filter"
+  value={followUpFilter}
+  onChange={(event) => setFollowUpFilter(event.target.value)}
+  aria-label="Filter by follow-up date"
+>
+  <option value="All">All follow-ups</option>
+  <option value="Overdue">Overdue</option>
+  <option value="Due today">Due today</option>
+  <option value="Upcoming">Upcoming</option>
 </select>
 <select
   className="sort-filter"
