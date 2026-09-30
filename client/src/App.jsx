@@ -76,7 +76,7 @@ const [emailDraftError, setEmailDraftError] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [followUpFilter, setFollowUpFilter] = useState("All");
-  const [sortOrder, setSortOrder] = useState("newest");
+  const [sortOrder, setSortOrder] = useState("application-newest");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
@@ -167,11 +167,32 @@ async function handleDraftFollowUpEmail() {
     return matchesSearch && matchesStatus && matchesFollowUp;
   })
   .sort((a, b) => {
-    const dateA = new Date(a.applicationDate || a.createdAt || 0).getTime();
-    const dateB = new Date(b.applicationDate || b.createdAt || 0).getTime();
+  if (
+    sortOrder === "followup-soonest" ||
+    sortOrder === "followup-latest"
+  ) {
+    const followUpA = a.followUpDate
+      ? new Date(a.followUpDate).getTime()
+      : null;
+    const followUpB = b.followUpDate
+      ? new Date(b.followUpDate).getTime()
+      : null;
 
-    return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
-  });
+    if (followUpA === null) return followUpB === null ? 0 : 1;
+    if (followUpB === null) return -1;
+
+    return sortOrder === "followup-soonest"
+      ? followUpA - followUpB
+      : followUpB - followUpA;
+  }
+
+  const dateA = new Date(a.applicationDate || a.createdAt || 0).getTime();
+  const dateB = new Date(b.applicationDate || b.createdAt || 0).getTime();
+
+  return sortOrder === "application-newest"
+    ? dateB - dateA
+    : dateA - dateB;
+});
   const overdueFollowUps = applications.filter(
   (item) =>
     item.followUpDate &&
@@ -738,8 +759,14 @@ setEditingApplicationId(null);
   onChange={(event) => setSortOrder(event.target.value)}
   aria-label="Sort applications by date"
 >
-  <option value="newest">Newest first</option>
-  <option value="oldest">Oldest first</option>
+ <optgroup label="Application date">
+  <option value="application-newest">Newest first</option>
+  <option value="application-oldest">Oldest first</option>
+</optgroup>
+<optgroup label="Follow-up date">
+  <option value="followup-soonest">Soonest first</option>
+  <option value="followup-latest">Latest first</option>
+</optgroup>
 </select>
             <input
               className="search-input"
