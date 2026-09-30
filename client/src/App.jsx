@@ -160,6 +160,8 @@ async function handleDraftFollowUpEmail() {
       followUpFilter === "All" ||
       (followUpFilter === "Overdue" && followUpLabel === "Overdue") ||
       (followUpFilter === "Due today" && followUpLabel === "Due today") ||
+      (followUpFilter === "Needs attention" &&
+  (followUpLabel === "Overdue" || followUpLabel === "Due today")) ||
       (followUpFilter === "Upcoming" && followUpLabel === "Follow up by");
 
     return matchesSearch && matchesStatus && matchesFollowUp;
@@ -380,6 +382,21 @@ setEditingApplicationId(null);
           Applications
           <span className="nav-count">{applications.length}</span>
         </a>
+        <a
+  className="nav-link"
+  href="#applications"
+  onClick={() => {
+    setFollowUpFilter("Needs attention");
+    setStatusFilter("All");
+    setSearch("");
+  }}
+>
+  <span className="nav-icon">◷</span>
+  Follow-ups
+  <span className="nav-count">
+    {overdueFollowUps + followUpsDueToday}
+  </span>
+</a>
 
         <p className="sidebar-label tools-label">TOOLS</p>
         <a className="nav-link" href="#ai-analyzer">
@@ -713,6 +730,7 @@ setEditingApplicationId(null);
   <option value="Overdue">Overdue</option>
   <option value="Due today">Due today</option>
   <option value="Upcoming">Upcoming</option>
+  <option value="Needs attention">Needs attention</option>
 </select>
 <select
   className="sort-filter"
