@@ -983,3 +983,18 @@ a {
   outline: 3px solid #176b55;
   outline-offset: 3px;
 }
+.export-button {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 18px;
+  background: #c5ef72;
+  color: #13251f;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.export-button:hover {
+  background: #b5e65f;
+}

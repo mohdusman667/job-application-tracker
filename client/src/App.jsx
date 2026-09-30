@@ -140,6 +140,54 @@ const followUpsDueToday = applications.filter(
     item.followUpDate &&
     getFollowUpLabel(item.followUpDate) === "Due today"
 ).length;
+function handleExportCsv() {
+  const headers = [
+    "Company",
+    "Job Title",
+    "Location",
+    "Status",
+    "Application Date",
+    "Follow-up Date",
+    "Job URL",
+    "Notes",
+    "Description",
+  ];
+
+  const escapeCsv = (value) =>
+    `"${String(value ?? "").replace(/"/g, '""')}"`;
+
+  const rows = applications.map((application) =>
+    [
+      application.company,
+      application.jobTitle,
+      application.location,
+      application.status,
+      application.applicationDate
+        ? new Date(application.applicationDate).toISOString().slice(0, 10)
+        : "",
+      application.followUpDate
+        ? new Date(application.followUpDate).toISOString().slice(0, 10)
+        : "",
+      application.jobUrl,
+      application.notes,
+      application.description,
+    ]
+      .map(escapeCsv)
+      .join(",")
+  );
+
+  const csv = [headers.map(escapeCsv).join(","), ...rows].join("\r\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const downloadLink = document.createElement("a");
+
+  downloadLink.href = url;
+  downloadLink.download = "job-applications.csv";
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  downloadLink.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
   function handleChange(event) {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
@@ -572,6 +620,13 @@ setEditingApplicationId(null);
               placeholder="Search company or role"
               aria-label="Search applications"
             />
+            <button
+  type="button"
+  className="export-button"
+  onClick={handleExportCsv}
+>
+  Export CSV
+</button>
           </div>
 
           {loading ? (
