@@ -998,3 +998,51 @@ a {
 .export-button:hover {
   background: #b5e65f;
 }
+.csv-menu {
+  position: relative;
+}
+
+.csv-menu summary {
+  display: inline-block;
+  list-style: none;
+  cursor: pointer;
+}
+
+.csv-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.csv-menu-items {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  min-width: 170px;
+  padding: 8px;
+  border: 1px solid #dce5dc;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(19, 37, 31, 0.14);
+}
+
+.csv-menu-action {
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: transparent;
+  color: #176b55;
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.csv-menu-action:hover {
+  background: #eff8f3;
+}
+
+.csv-file-input {
+  display: none;
+}

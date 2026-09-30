@@ -11,6 +11,47 @@ import {
 
 
 const statuses = ["Applied", "Interview", "Offer", "Rejected", "Withdrawn"];
+function parseCsv(csvText) {
+  const rows = [];
+  let row = [];
+  let field = "";
+  let insideQuotes = false;
+
+  for (let index = 0; index < csvText.length; index += 1) {
+    const character = csvText[index];
+    const nextCharacter = csvText[index + 1];
+
+    if (insideQuotes) {
+      if (character === '"' && nextCharacter === '"') {
+        field += '"';
+        index += 1;
+      } else if (character === '"') {
+        insideQuotes = false;
+      } else {
+        field += character;
+      }
+    } else if (character === '"' && field === "") {
+      insideQuotes = true;
+    } else if (character === ",") {
+      row.push(field);
+      field = "";
+    } else if (character === "\n") {
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = "";
+    } else if (character !== "\r") {
+      field += character;
+    }
+  }
+
+  if (field.length > 0 || row.length > 0) {
+    row.push(field);
+    rows.push(row);
+  }
+
+  return rows;
+}
 function getFollowUpLabel(dateValue) {
   const dueDate = new Date(dateValue);
   const today = new Date();
@@ -187,6 +228,76 @@ function handleExportCsv() {
   downloadLink.click();
   downloadLink.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+async function handleImportCsv(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  const importedApplications = [];
+
+  try {
+    const rows = parseCsv(await file.text());
+    if (rows.length < 2) {
+      throw new Error("This CSV has no application rows.");
+    }
+
+    const headers = rows[0].map((header) => header.trim().toLowerCase());
+    const columnIndex = (name) => headers.indexOf(name.toLowerCase());
+    const companyIndex = columnIndex("Company");
+    const jobTitleIndex = columnIndex("Job Title");
+
+    if (companyIndex === -1 || jobTitleIndex === -1) {
+      throw new Error("The CSV must include Company and Job Title columns.");
+    }
+
+    const existingKeys = new Set(
+      applications.map(
+        (application) =>
+          `${application.company.trim().toLowerCase()}|${application.jobTitle
+            .trim()
+            .toLowerCase()}`
+      )
+    );
+
+    for (const row of rows.slice(1)) {
+      const getValue = (name) => {
+        const index = columnIndex(name);
+        return index === -1 ? "" : row[index] || "";
+      };
+
+      const company = getValue("Company").trim();
+      const jobTitle = getValue("Job Title").trim();
+      if (!company || !jobTitle) continue;
+
+      const key = `${company.toLowerCase()}|${jobTitle.toLowerCase()}`;
+      if (existingKeys.has(key)) continue;
+      existingKeys.add(key);
+
+      const csvStatus = getValue("Status");
+
+      importedApplications.push(
+        await createApplication({
+          company,
+          jobTitle,
+          location: getValue("Location"),
+          status: statuses.includes(csvStatus) ? csvStatus : "Applied",
+          applicationDate: getValue("Application Date") || undefined,
+          followUpDate: getValue("Follow-up Date") || null,
+          jobUrl: getValue("Job URL"),
+          notes: getValue("Notes"),
+          description: getValue("Description"),
+        })
+      );
+    }
+
+    setApplications((current) => [...importedApplications, ...current]);
+    setError("");
+    window.alert(`Imported ${importedApplications.length} application(s).`);
+  } catch (importError) {
+    setError(importError.message || "Could not import this CSV.");
+  } finally {
+    event.target.value = "";
+  }
 }
   function handleChange(event) {
     const { name, value } = event.target;
@@ -620,13 +731,29 @@ setEditingApplicationId(null);
               placeholder="Search company or role"
               aria-label="Search applications"
             />
-            <button
-  type="button"
-  className="export-button"
-  onClick={handleExportCsv}
->
-  Export CSV
-</button>
+            <details className="csv-menu">
+  <summary className="export-button">CSV options</summary>
+
+  <div className="csv-menu-items">
+    <button
+      type="button"
+      className="csv-menu-action"
+      onClick={handleExportCsv}
+    >
+      Export CSV
+    </button>
+
+    <label className="csv-menu-action">
+      Import CSV
+      <input
+        className="csv-file-input"
+        type="file"
+        accept=".csv,text/csv"
+        onChange={handleImportCsv}
+      />
+    </label>
+  </div>
+</details>
           </div>
 
           {loading ? (
