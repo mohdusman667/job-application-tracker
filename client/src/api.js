@@ -46,13 +46,13 @@ export async function deleteApplication(id) {
 
   return readResponse(response);
 }
-export async function analyzeJobDescription(description) {
+export async function analyzeJobDescription(description, skills) {
   const response = await fetch("http://localhost:5000/api/ai/analyze", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ description }),
+    body: JSON.stringify({ description, skills }),
   });
 
   const data = await response.json().catch(() => ({}));

@@ -72,6 +72,7 @@ const [emailDraft, setEmailDraft] = useState("");
 const [isDraftingEmail, setIsDraftingEmail] = useState(false);
 const [emailDraftError, setEmailDraftError] = useState("");
   const [jobDescription, setJobDescription] = useState("");
+  const [candidateSkills, setCandidateSkills] = useState("");
   const [applications, setApplications] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -96,7 +97,7 @@ const [emailDraftError, setEmailDraftError] = useState("");
   setAnalysis("");
 
   try {
-    const result = await analyzeJobDescription(jobDescription);
+   const result = await analyzeJobDescription(jobDescription, candidateSkills);
     setAnalysis(result);
   } catch (requestError) {
     setAnalyzerError(requestError.message);
@@ -669,6 +670,16 @@ setEditingApplicationId(null);
               Our AI job description analyzer will surface key skills and help
               you prepare thoughtful interview questions.
             </p>
+            <label className="analyzer-label" htmlFor="candidate-skills">
+  Your skills and experience
+</label>
+<textarea
+  id="candidate-skills"
+  rows="4"
+  value={candidateSkills}
+  onChange={(event) => setCandidateSkills(event.target.value)}
+  placeholder="List your skills, tools, and relevant experience..."
+/>
             <label className="analyzer-label" htmlFor="job-description">
   Paste a job description
 </label>

@@ -1046,3 +1046,21 @@ a {
 .csv-file-input {
   display: none;
 }
+.ai-card .analyzer-label {
+  color: #c5ef72;
+}
+
+.ai-card textarea#candidate-skills {
+  width: 100%;
+  border: 1px solid #dce5dc;
+  border-radius: 12px;
+  padding: 14px;
+  background: #fff;
+  color: #17342d;
+  font: inherit;
+}
+
+.ai-card textarea#candidate-skills::placeholder {
+  color: #7c8b83;
+  opacity: 1;
+}

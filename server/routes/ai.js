@@ -7,11 +7,17 @@ router.post("/analyze", async (req, res) => {
     typeof req.body?.description === "string"
       ? req.body.description.trim()
       : "";
+      const skills =
+  typeof req.body?.skills === "string" ? req.body.skills.trim() : "";
 
   if (!description) {
     return res.status(400).json({ message: "Paste a job description first." });
   }
-
+if (!skills) {
+  return res
+    .status(400)
+    .json({ message: "Enter your skills and experience first." });
+}
   if (description.length > 12000) {
     return res
       .status(413)
@@ -35,6 +41,12 @@ Return:
 2. Key skills and qualifications
 3. Main responsibilities
 4. Three likely interview questions
+5. A job-fit score from 0 to 100 comparing the candidate's skills to the role requirements
+6. The candidate's strongest matching skills
+7. The most important skill gaps
+
+Candidate skills and experience:
+${skills}
 
 Job description:
 ${description}`,
