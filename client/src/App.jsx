@@ -76,6 +76,7 @@ const [emailDraftError, setEmailDraftError] = useState("");
   const [applications, setApplications] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [viewMode, setViewMode] = useState("list");
   const [followUpFilter, setFollowUpFilter] = useState("All");
   const [sortOrder, setSortOrder] = useState("application-newest");
   const [error, setError] = useState("");
@@ -359,6 +360,28 @@ setEditingApplicationId(null);
       setError(requestError.message);
     }
   }
+  function handleDragStart(event, applicationId) {
+  event.dataTransfer.setData("text/plain", applicationId);
+  event.dataTransfer.effectAllowed = "move";
+}
+
+function handleDragOver(event) {
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+}
+
+function handleDrop(event, status) {
+  event.preventDefault();
+
+  const applicationId = event.dataTransfer.getData("text/plain");
+  const application = applications.find(
+    (item) => item._id === applicationId
+  );
+
+  if (application && application.status !== status) {
+    handleStatusChange(applicationId, status);
+  }
+}
 
   async function handleStatusChange(id, status) {
     setError("");
@@ -811,6 +834,22 @@ setEditingApplicationId(null);
   </div>
 </details>
           </div>
+          <div className="view-toggle" role="group" aria-label="Choose applications view">
+  <button
+    type="button"
+    className={viewMode === "list" ? "view-toggle-button active" : "view-toggle-button"}
+    onClick={() => setViewMode("list")}
+  >
+    List
+  </button>
+  <button
+    type="button"
+    className={viewMode === "board" ? "view-toggle-button active" : "view-toggle-button"}
+    onClick={() => setViewMode("board")}
+  >
+    Board
+  </button>
+</div>
 
           {loading ? (
             <p className="empty-state">Loading your applications…</p>
@@ -820,7 +859,7 @@ setEditingApplicationId(null);
                 ? "Your pipeline starts here. Add your first application above."
                 : "No applications match that search."}
             </p>
-          ) : (
+      ) : viewMode === "list" ? (
             <div className="application-list">
               {visibleApplications.map((application) => (
                 <article className="application-card" key={application._id}>
@@ -899,7 +938,45 @@ setEditingApplicationId(null);
                 </article>
               ))}
             </div>
-          )}
+       ) : (
+  <div className="kanban-board">
+    {statuses.map((status) => {
+      const columnApplications = visibleApplications.filter(
+        (application) => application.status === status
+      );
+
+      return (
+        <section
+          className="kanban-column"
+          key={status}
+          onDragOver={handleDragOver}
+          onDrop={(event) => handleDrop(event, status)}
+        >
+          <h3>
+            {status} <span>{columnApplications.length}</span>
+          </h3>
+
+          <div className="kanban-cards">
+            {columnApplications.map((application) => (
+              <article
+                className="kanban-card"
+                key={application._id}
+                draggable
+                onDragStart={(event) =>
+                  handleDragStart(event, application._id)
+                }
+              >
+                <h4>{application.jobTitle}</h4>
+                <p>{application.company}</p>
+                {application.location && <p>{application.location}</p>}
+              </article>
+            ))}
+          </div>
+        </section>
+      );
+    })}
+  </div>
+)}
         </section>
       </main>
     </div>
