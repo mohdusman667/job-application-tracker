@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/applications";
+const API_URL = "https://job-application-tracker-d8s6.onrender.com/api/applications";
 
 async function readResponse(response) {
   const data = await response.json();
@@ -47,7 +47,7 @@ export async function deleteApplication(id) {
   return readResponse(response);
 }
 export async function analyzeJobDescription(description, skills) {
-  const response = await fetch("http://localhost:5000/api/ai/analyze", {
+  const response = await fetch("https://job-application-tracker-d8s6.onrender.com/api/ai/analyze", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -64,7 +64,7 @@ export async function analyzeJobDescription(description, skills) {
   return data.analysis;
 }
 export async function draftFollowUpEmail(application) {
-  const response = await fetch("http://localhost:5000/api/ai/draft-email", {
+  const response = await fetch("https://job-application-tracker-d8s6.onrender.com/api/ai/draft-email", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
