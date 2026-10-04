@@ -5,6 +5,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const applicationsRouter = require("./routes/applications");
 const aiRoutes = require("./routes/ai");
+   const authRouter = require("./routes/auth");
 
 const app = express();
 const PORT = 5000;
@@ -18,7 +19,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/applications", applicationsRouter);
 app.use("/api/ai", aiRoutes);
-
+   app.use("/api/auth", authRouter);
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
