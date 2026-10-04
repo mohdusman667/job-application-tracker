@@ -9,7 +9,7 @@ const aiRoutes = require("./routes/ai");
 const app = express();
 const PORT = 5000;
 
-app.use(cors());
+app.use(cors({ origin: "https://job-application-tracker-ten-ecru.vercel.app" }));
 app.use(express.json());
 
 app.get("/", (req, res) => {
