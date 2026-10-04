@@ -1143,3 +1143,144 @@ a {
     grid-template-columns: repeat(5, minmax(230px, 1fr));
   }
 }
+
+/* ---------- Login and register page ---------- */
+
+.auth-page {
+  display: grid;
+  min-height: 100vh;
+  padding: 24px;
+  place-items: center;
+  background: #f5f6f2;
+}
+
+.auth-card {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 28px;
+  border: 1px solid #e4e9e2;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(23, 35, 31, 0.08);
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 8px;
+  color: #17231f;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.auth-brand .brand-dot {
+  color: #7aa22d;
+}
+
+.auth-card h1 {
+  margin: 0;
+  color: #17231f;
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.auth-subtitle {
+  margin: -8px 0 4px;
+  color: #77827b;
+  font-size: 0.9rem;
+}
+
+.auth-card label {
+  display: grid;
+  gap: 7px;
+  color: #56645b;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.auth-card input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #dfe5dd;
+  border-radius: 8px;
+  color: #26342b;
+  background: #fff;
+  font-size: 0.9rem;
+}
+
+.auth-card input::placeholder {
+  color: #a1aaa2;
+}
+
+.auth-card input:focus {
+  outline: 3px solid #e4f2cf;
+  border-color: #91b853;
+}
+
+.auth-error {
+  margin: 0;
+  padding: 11px 14px;
+  border: 1px solid #efcaca;
+  border-radius: 9px;
+  color: #963e3e;
+  background: #fff4f2;
+  font-size: 0.85rem;
+}
+
+.auth-submit {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.auth-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.auth-switch {
+  margin: 0;
+  color: #77827b;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.auth-switch button {
+  padding: 0;
+  border: 0;
+  color: #176b55;
+  background: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.auth-switch button:hover {
+  text-decoration: underline;
+}
+
+.logout-button {
+  padding: 8px 14px;
+  border: 1px solid #dce5dc;
+  border-radius: 10px;
+  color: #176b55;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.logout-button:hover {
+  background: #eff8f3;
+}
+
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

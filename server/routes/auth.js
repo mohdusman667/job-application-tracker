@@ -38,9 +38,10 @@ router.post("/register", async (req, res) => {
       token: createToken(user),
       user: { id: user._id, name: user.name, email: user.email },
     });
-  } catch (error) {
-    res.status(500).json({ message: "Could not create the account." });
-  }
+    } catch (error) {
+     console.error("Register failed:", error.message);
+     res.status(500).json({ message: "Could not create the account." });
+   }
 });
 
 // Log in to an existing account
@@ -62,9 +63,10 @@ router.post("/login", async (req, res) => {
       token: createToken(user),
       user: { id: user._id, name: user.name, email: user.email },
     });
-  } catch (error) {
-    res.status(500).json({ message: "Could not log in." });
-  }
+      } catch (error) {
+     console.error("Login failed:", error.message);
+     res.status(500).json({ message: "Could not log in." });
+   }
 });
 
 module.exports = router;

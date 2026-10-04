@@ -6,20 +6,27 @@ const mongoose = require("mongoose");
 const applicationsRouter = require("./routes/applications");
 const aiRoutes = require("./routes/ai");
    const authRouter = require("./routes/auth");
-
+   const requireAuth = require("./middleware/auth");
 const app = express();
 const PORT = 5000;
 
-app.use(cors({ origin: "https://job-application-tracker-ten-ecru.vercel.app" }));
+   app.use(
+     cors({
+       origin: [
+         "https://job-application-tracker-ten-ecru.vercel.app",
+         "http://localhost:5173",
+       ],
+     })
+   );
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Job Application Tracker API is running!");
 });
 
-app.use("/api/applications", applicationsRouter);
-app.use("/api/ai", aiRoutes);
    app.use("/api/auth", authRouter);
+   app.use("/api/applications", requireAuth, applicationsRouter);
+   app.use("/api/ai", requireAuth, aiRoutes);
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });

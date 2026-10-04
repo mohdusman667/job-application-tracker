@@ -11,6 +11,14 @@ import {
 
 
 const statuses = ["Applied", "Interview", "Offer", "Rejected", "Withdrawn"];
+   function getCurrentUserInitial() {
+     try {
+       const user = JSON.parse(localStorage.getItem("user"));
+       return (user?.name || user?.email || "U").charAt(0).toUpperCase();
+     } catch {
+       return "U";
+     }
+   }
 function parseCsv(csvText) {
   const rows = [];
   let row = [];
@@ -64,7 +72,8 @@ function getFollowUpLabel(dateValue) {
   return "Follow up by";
 }
 
-function App() {
+   function App({ onLogout }) {
+       const currentUserInitial = getCurrentUserInitial();
   const [analysis, setAnalysis] = useState("");
 const [isAnalyzing, setIsAnalyzing] = useState(false);
 const [analyzerError, setAnalyzerError] = useState("");
@@ -460,10 +469,15 @@ function handleDrop(event, status) {
       </aside>
 
       <main className="main-content">
-        <header className="topbar">
-          <span>PERSONAL WORKSPACE <span className="breadcrumb">/ APPLICATIONS</span></span>
-          <span className="profile-mark">U</span>
-        </header>
+           <header className="topbar">
+     <span>PERSONAL WORKSPACE <span className="breadcrumb">/ APPLICATIONS</span></span>
+     <div className="topbar-user">
+       <button type="button" className="logout-button" onClick={onLogout}>
+         Log out
+       </button>
+       <span className="profile-mark">{currentUserInitial}</span>
+     </div>
+   </header>
 
         <section className="welcome-row">
           <div>
