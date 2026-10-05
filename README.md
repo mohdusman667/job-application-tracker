@@ -47,6 +47,9 @@ Create `server/.env`:
 MONGO_URI=your_mongodb_connection_string
 GEMINI_API_KEY=your_gemini_api_key
 JWT_SECRET=a_long_random_string
+BREVO_API_KEY=your_api_key
+SENDER_EMAIL=example.com
+CLIENT_URL=http://localhost:5173
 ```
 
 Then start the server:
