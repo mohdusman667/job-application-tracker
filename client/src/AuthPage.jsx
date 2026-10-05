@@ -1,27 +1,73 @@
 import { useState } from "react";
-import { loginUser, registerUser } from "./api";
+import {
+  loginUser,
+  registerUser,
+  requestPasswordReset,
+  resetPassword,
+} from "./api";
+
+function getResetTokenFromUrl() {
+  return new URLSearchParams(window.location.search).get("resetToken") || "";
+}
 
 function AuthPage({ onAuth }) {
-  const [mode, setMode] = useState("login");
+  const [resetToken] = useState(getResetTokenFromUrl);
+  const [mode, setMode] = useState(resetToken ? "reset" : "login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
 
   const isRegister = mode === "register";
+  const isForgot = mode === "forgot";
+  const isReset = mode === "reset";
+
+  const titles = {
+    login: "Welcome back",
+    register: "Create your account",
+    forgot: "Forgot your password?",
+    reset: "Choose a new password",
+  };
+
+  const subtitles = {
+    login: "Log in to see your applications.",
+    register: "Start tracking your job applications.",
+    forgot: "Enter your email and we will send you a reset link.",
+    reset: "Enter a new password for your account.",
+  };
+
+  const buttonLabels = {
+    login: "Log in",
+    register: "Create account",
+    forgot: "Send reset link",
+    reset: "Save new password",
+  };
 
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
+    setNotice("");
     setLoading(true);
 
     try {
-      const result = isRegister
-        ? await registerUser(name, email, password)
-        : await loginUser(email, password);
+      if (isForgot) {
+        const result = await requestPasswordReset(email);
+        setNotice(result.message);
+      } else if (isReset) {
+        const result = await resetPassword(resetToken, password);
+        window.history.replaceState({}, "", window.location.pathname);
+        setPassword("");
+        setMode("login");
+        setNotice(result.message);
+      } else {
+        const result = isRegister
+          ? await registerUser(name, email, password)
+          : await loginUser(email, password);
 
-      onAuth(result);
+        onAuth(result);
+      }
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -29,9 +75,10 @@ function AuthPage({ onAuth }) {
     }
   }
 
-  function switchMode() {
-    setMode(isRegister ? "login" : "register");
+  function goTo(nextMode) {
+    setMode(nextMode);
     setError("");
+    setNotice("");
   }
 
   return (
@@ -44,12 +91,8 @@ function AuthPage({ onAuth }) {
           </span>
         </div>
 
-        <h1>{isRegister ? "Create your account" : "Welcome back"}</h1>
-        <p className="auth-subtitle">
-          {isRegister
-            ? "Start tracking your job applications."
-            : "Log in to see your applications."}
-        </p>
+        <h1>{titles[mode]}</h1>
+        <p className="auth-subtitle">{subtitles[mode]}</p>
 
         {isRegister && (
           <label>
@@ -64,30 +107,52 @@ function AuthPage({ onAuth }) {
           </label>
         )}
 
-        <label>
-          Email
-          <input
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder="you@example.com"
-            autoComplete="email"
-            required
-          />
-        </label>
+        {!isReset && (
+          <label>
+            Email
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="you@example.com"
+              autoComplete="email"
+              required
+            />
+          </label>
+        )}
 
-        <label>
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            placeholder="At least 8 characters"
-            autoComplete={isRegister ? "new-password" : "current-password"}
-            minLength={8}
-            required
-          />
-        </label>
+        {!isForgot && (
+          <label>
+            {isReset ? "New password" : "Password"}
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="At least 8 characters"
+              autoComplete={
+                isRegister || isReset ? "new-password" : "current-password"
+              }
+              minLength={8}
+              required
+            />
+          </label>
+        )}
+
+        {mode === "login" && (
+          <button
+            type="button"
+            className="auth-forgot"
+            onClick={() => goTo("forgot")}
+          >
+            Forgot password?
+          </button>
+        )}
+
+        {notice && (
+          <p className="auth-notice" role="status">
+            {notice}
+          </p>
+        )}
 
         {error && (
           <p className="auth-error" role="alert">
@@ -95,19 +160,36 @@ function AuthPage({ onAuth }) {
           </p>
         )}
 
-        <button className="primary-button auth-submit" type="submit" disabled={loading}>
-          {loading
-            ? "Please wait..."
-            : isRegister
-            ? "Create account"
-            : "Log in"}
+        <button
+          className="primary-button auth-submit"
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? "Please wait..." : buttonLabels[mode]}
         </button>
 
         <p className="auth-switch">
-          {isRegister ? "Already have an account?" : "New here?"}{" "}
-          <button type="button" onClick={switchMode}>
-            {isRegister ? "Log in" : "Create an account"}
-          </button>
+          {mode === "login" && (
+            <>
+              New here?{" "}
+              <button type="button" onClick={() => goTo("register")}>
+                Create an account
+              </button>
+            </>
+          )}
+          {mode === "register" && (
+            <>
+              Already have an account?{" "}
+              <button type="button" onClick={() => goTo("login")}>
+                Log in
+              </button>
+            </>
+          )}
+          {(isForgot || isReset) && (
+            <button type="button" onClick={() => goTo("login")}>
+              Back to log in
+            </button>
+          )}
         </p>
       </form>
     </div>

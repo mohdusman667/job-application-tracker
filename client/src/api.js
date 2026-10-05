@@ -56,6 +56,13 @@ export function registerUser(name, email, password) {
 export function loginUser(email, password) {
   return authRequest("login", { email, password });
 }
+   export function requestPasswordReset(email) {
+     return authRequest("forgot-password", { email });
+   }
+
+   export function resetPassword(token, password) {
+     return authRequest("reset-password", { token, password });
+   }
 
 // ---------- Applications ----------
 

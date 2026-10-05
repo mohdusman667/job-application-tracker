@@ -1284,3 +1284,29 @@ a {
   align-items: center;
   gap: 12px;
 }
+.auth-forgot {
+  justify-self: end;
+  margin-top: -6px;
+  padding: 0;
+  border: 0;
+  color: #176b55;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.auth-forgot:hover {
+  text-decoration: underline;
+}
+
+.auth-notice {
+  margin: 0;
+  padding: 11px 14px;
+  border: 1px solid #cce6dd;
+  border-radius: 9px;
+  color: #1f5c46;
+  background: #f3fbf7;
+  font-size: 0.85rem;
+}

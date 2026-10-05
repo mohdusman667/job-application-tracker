@@ -19,7 +19,9 @@ function Root() {
     setToken(null)
   }
 
-  return token ? (
+     const isResetting = new URLSearchParams(window.location.search).has('resetToken')
+
+   return token && !isResetting ? (
     <App onLogout={handleLogout} />
   ) : (
     <AuthPage onAuth={handleAuth} />
