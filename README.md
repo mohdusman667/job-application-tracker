@@ -84,3 +84,7 @@ Open http://localhost:5173 and create an account.
 - Passwords are hashed with bcrypt and never stored in plain text.
 - API routes require a valid login token, and each query is scoped to the logged-in user.
 - Secrets live in `.env` files, which are excluded from git.
+
+## Author
+
+Mohd Usman
