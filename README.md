@@ -77,7 +77,7 @@ Then start the app:
 npm run dev
 ```
 
-Open http://localhost:5173 and create an account.
+Open https://job-application-tracker-ten-ecru.vercel.app and create an account.
 
 ## Security notes
 
