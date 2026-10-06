@@ -110,7 +110,8 @@ router.post("/forgot-password", async (req, res) => {
     // Same answer whether or not the email exists, so nobody can use this
     // form to find out which emails have accounts.
     res.json({
-      message: "If an account exists for that email, a reset link has been sent.",
+        message:
+     "If an account exists for that email, a reset link has been sent. If you don't see it within a few minutes, check your spam folder.",
     });
   } catch (error) {
     console.error("Forgot password failed:", error.message);
