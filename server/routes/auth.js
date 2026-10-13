@@ -3,9 +3,35 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const sendEmail = require("../utils/sendEmail");
+   const sendEmail = require("../utils/sendEmail");
+   const { rateLimit } = require("express-rate-limit");
 
-const router = express.Router();
+   const router = express.Router();
+
+   const loginLimiter = rateLimit({
+     windowMs: 15 * 60 * 1000,
+     limit: 10,
+     skipSuccessfulRequests: true,
+     standardHeaders: true,
+     legacyHeaders: false,
+     message: { message: "Too many login attempts. Please try again in 15 minutes." },
+   });
+
+   const registerLimiter = rateLimit({
+     windowMs: 60 * 60 * 1000,
+     limit: 10,
+     standardHeaders: true,
+     legacyHeaders: false,
+     message: { message: "Too many sign-up attempts. Please try again later." },
+   });
+
+   const forgotLimiter = rateLimit({
+     windowMs: 60 * 60 * 1000,
+     limit: 5,
+     standardHeaders: true,
+     legacyHeaders: false,
+     message: { message: "Too many reset requests. Please try again in an hour." },
+   });
 
 function createToken(user) {
   return jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -18,7 +44,7 @@ function hashToken(token) {
 }
 
 // Create a new account
-router.post("/register", async (req, res) => {
+     router.post("/register", registerLimiter, async (req, res) => {
   try {
     const name = String(req.body?.name || "").trim();
     const email = String(req.body?.email || "").trim().toLowerCase();
@@ -51,7 +77,7 @@ router.post("/register", async (req, res) => {
 });
 
 // Log in to an existing account
-router.post("/login", async (req, res) => {
+     router.post("/login", loginLimiter, async (req, res) => {
   try {
     const email = String(req.body?.email || "").trim().toLowerCase();
     const password = String(req.body?.password || "");
@@ -76,7 +102,7 @@ router.post("/login", async (req, res) => {
 });
 
 // Email a password reset link
-router.post("/forgot-password", async (req, res) => {
+     router.post("/forgot-password", forgotLimiter, async (req, res) => {
   try {
     const email = String(req.body?.email || "").trim().toLowerCase();
 

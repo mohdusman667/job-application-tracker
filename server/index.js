@@ -8,6 +8,7 @@ const aiRoutes = require("./routes/ai");
    const authRouter = require("./routes/auth");
    const requireAuth = require("./middleware/auth");
 const app = express();
+   app.set("trust proxy", 1);
 const PORT = 5000;
 
    app.use(
