@@ -6,6 +6,14 @@ A full-stack MERN app for organizing job applications, tracking progress, and pr
 
 > The backend runs on a free hosting plan, so the first request after a quiet period can take 30 to 60 seconds. Create your own account to try it. Your data is private to your account.
 
+   ## Screenshots
+
+   ![Login page](docs/screenshots/login.png)
+
+   ![Dashboard](docs/screenshots/dashboard.png)
+
+   ![Board view](docs/screenshots/board.png)
+
 ## Features
 
 - **Accounts:** register and log in, with each user seeing only their own applications
