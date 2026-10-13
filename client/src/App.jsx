@@ -19,6 +19,14 @@ const statuses = ["Applied", "Interview", "Offer", "Rejected", "Withdrawn"];
        return "U";
      }
    }
+      function getCurrentUserFirstName() {
+     try {
+       const user = JSON.parse(localStorage.getItem("user"));
+       return (user?.name || "").trim().split(" ")[0];
+     } catch {
+       return "";
+     }
+   }
 function parseCsv(csvText) {
   const rows = [];
   let row = [];
@@ -74,6 +82,7 @@ function getFollowUpLabel(dateValue) {
 
    function App({ onLogout }) {
        const currentUserInitial = getCurrentUserInitial();
+          const currentUserFirstName = getCurrentUserFirstName();
   const [analysis, setAnalysis] = useState("");
 const [isAnalyzing, setIsAnalyzing] = useState(false);
 const [analyzerError, setAnalyzerError] = useState("");
@@ -482,7 +491,11 @@ function handleDrop(event, status) {
         <section className="welcome-row">
           <div>
             <p className="eyebrow">YOUR CAREER DASHBOARD</p>
-            <h1>Make your next move.</h1>
+               <h1>
+     {currentUserFirstName
+       ? `Make your next move, ${currentUserFirstName}.`
+       : "Make your next move."}
+   </h1>
             <p className="welcome-copy">
               Keep every opportunity, conversation, and next step in focus.
             </p>
