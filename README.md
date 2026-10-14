@@ -50,7 +50,7 @@ GEMINI_API_KEY=your_gemini_api_key
 JWT_SECRET=a_long_random_string
 BREVO_API_KEY=your_api_key
 SENDER_EMAIL=your_email@gmail.com
-CLIENT_URL=http://localhost:5173
+CLIENT_URL=https://job-application-tracker-ten-ecru.vercel.app
 ```
 
 Then start the server:
